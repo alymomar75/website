@@ -9,143 +9,165 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS PERSONNALISÉ (STYLE GRIS MÉTALLIQUE & PREMIUM SÉNÉGAL) ---
+# --- IMPORT DES DRAPEAUX & CSS ---
 st.markdown("""
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
     <style>
     [data-testid="stHeader"] { visibility: hidden; }
-    
-    /* Arrière-plan dégradé Gris Anthracite / Acier */
     .stApp {
-        background: linear-gradient(-45deg, #121212, #2c3e50, #1a1a1a, #434343);
+        background: linear-gradient(-45deg, #0f0f0f, #232526, #414345, #1a1a1a);
         background-size: 400% 400%;
         animation: gradient 15s ease infinite;
         color: #e0e0e0;
     }
-    
     @keyframes gradient {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
-
-    /* Cartes Produits (Effet Verre Dépoli Gris) */
     .product-card {
-        background: rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.05);
         padding: 20px;
         border-radius: 15px;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        text-align: left;
         transition: all 0.3s ease;
         margin-bottom: 20px;
+        height: 450px;
     }
     .product-card:hover {
         transform: translateY(-8px);
         border-color: #bdc3c7;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     }
     .product-img {
         width: 100%;
-        height: 180px;
+        height: 200px;
         object-fit: cover;
         border-radius: 10px;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #34495e;
     }
-    
-    /* Badge Sénégal */
     .sn-badge {
-        background-color: #00853f;
-        color: white;
-        padding: 2px 8px;
-        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
         font-size: 0.7rem;
-        font-weight: bold;
-        margin-right: 5px;
+        margin-top: 10px;
     }
-
-    /* Titres et Boutons */
-    h1, h2, h3 { font-family: 'Inter', sans-serif; color: #ffffff; }
-    .stButton>button {
-        background-color: #ffffff !important;
-        color: #1a1a1a !important;
-        border-radius: 8px;
-        font-weight: bold;
-        border: none;
-        transition: 0.3s;
+    /* Style des Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 24px;
+        justify-content: center;
     }
-    .stButton>button:hover {
-        background-color: #bdc3c7 !important;
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        background-color: transparent !important;
+        border-radius: 4px 4px 0px 0px;
+        color: white !important;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .stTabs [aria-selected="true"] {
+        border-bottom: 2px solid #bdc3c7 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# --- BASE DE DONNÉES ÉTENDUE ---
+inventory = [
+    {"type": "Voiture", "marque": "Mercedes", "mod": "Classe G 63 AMG", "px": 95000000, "desc": "V8 Biturbo • 2023 • Noir", "img": "https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=800"},
+    {"type": "Voiture", "marque": "Toyota", "mod": "Land Cruiser 300", "px": 75000000, "desc": "V6 Diesel • Neuf • Full Option", "img": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=800"},
+    {"type": "Voiture", "marque": "Range Rover", "mod": "Vogue Autobiography", "px": 110000000, "desc": "Hybride • 2024 • Luxe Absolu", "img": "https://images.unsplash.com/photo-1590362891175-3794ef169f24?q=80&w=800"},
+    {"type": "Voiture", "marque": "Hyundai", "mod": "Tucson 2023", "px": 195000000, "desc": "Essence • Automatique • Dakar", "img": "https://images.unsplash.com/photo-1620215175664-cb9a6f5b6103?q=80&w=800"},
+    {"type": "Moto", "marque": "Yamaha", "mod": "TMAX 560 Tech Max", "px": 8900000, "desc": "Gris Nardo • 2024 • Connectée", "img": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800"},
+    {"type": "Moto", "marque": "BMW", "mod": "R 1250 GS Adventure", "px": 14500000, "desc": "Triple Black • Pack Touring", "img": "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800"},
+    {"type": "Moto", "marque": "Kawasaki", "mod": "Ninja ZX-10R", "px": 12000000, "desc": "Vert KRT • Performance Pure", "img": "https://images.unsplash.com/photo-1444491741275-3747c53c99b4?q=80&w=800"},
+    {"type": "Moto", "marque": "Honda", "mod": "Africa Twin", "px": 10500000, "desc": "DCT • Idéal Pistes Sénégal", "img": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800"}
+]
+
 # --- EN-TÊTE ---
 st.markdown("""
-    <div style="text-align: center; padding: 20px 0;">
-        <p style="letter-spacing: 3px; color: #00853f; font-weight: bold; margin-bottom: 0;">🇸🇳 LE PRESTIGE AU SÉNÉGAL</p>
-        <h1 style="font-size: 3rem; margin:0; letter-spacing: 1px;">DAKAR <span style="color: #bdc3c7;">ELITE</span></h1>
-        <p style="opacity: 0.7; font-size: 1rem;">L'excellence automobile et deux-roues au cœur de la capitale.</p>
+    <div style="text-align: center; padding: 10px 0;">
+        <h1 style="font-size: 2.5rem; margin:0; letter-spacing: 2px;">DAKAR <span style="color: #bdc3c7;">ELITE</span></h1>
+        <p style="opacity: 0.8;"><span class="fi fi-sn"></span> Concessionnaire Multimarque Premium</p>
     </div>
 """, unsafe_allow_html=True)
 
-# --- LOGIQUE DE SÉLECTION ---
-if 'selection' not in st.session_state:
-    st.session_state.selection = None
+# --- NAVIGATION (CATALOGUE) ---
+tab_home, tab_search, tab_brands = st.tabs(["🏠 Accueil", "🔍 Recherche & Filtres", "🏭 Marques proposées"])
 
-# --- SECTION VOITURES ---
-st.markdown("## 🚗 Véhicules de Prestige")
-cars = [
-    {"mod": "Range Rover Sport 2023", "px": "65.000.000 F", "desc": "V8 • Full Options • Neuf", "img": "https://images.unsplash.com/photo-1590362891175-3794ef169f24?q=80&w=800"},
-    {"mod": "Mercedes Classe G", "px": "85.000.000 F", "desc": "AMG • Noir Obsidienne • Dakar Ready", "img": "https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=800"}
-]
+# --- TAB : ACCUEIL ---
+with tab_home:
+    st.markdown("### 🔥 Les Exclusivités du Moment")
+    cols = st.columns(2)
+    for i, item in enumerate(inventory[:4]): # Affiche les 4 premiers
+        with cols[i % 2]:
+            st.markdown(f"""<div class="product-card">
+                <img src="{item['img']}" class="product-img">
+                <div class="sn-badge"><span class="fi fi-sn"></span> DAKAR STOCK</div>
+                <h3>{item['mod']}</h3>
+                <p>{item['desc']}</p>
+                <h4 style="color: #bdc3c7;">{item['px']:,} F CFA</h4>
+            </div>""", unsafe_allow_html=True)
+            if st.button(f"S'informer sur {item['mod']}", key=f"home_{i}"):
+                st.toast(f"Demande envoyée pour {item['mod']}")
 
-c1, c2 = st.columns(2)
-for i, c in enumerate(cars):
-    with (c1 if i==0 else c2):
-        st.markdown(f"""<div class="product-card">
-            <img src="{c['img']}" class="product-img">
-            <span class="sn-badge">DISPONIBLE DAKAR</span>
-            <h3 style="margin:5px 0;">{c['mod']}</h3>
-            <p style="opacity:0.7;">{c['desc']}</p>
-            <h4 style="color: #bdc3c7;">{c['px']}</h4>
-        </div>""", unsafe_allow_html=True)
-        if st.button(f"Réserver {c['mod']}", key=f"car_{i}"):
-            st.session_state.selection = c
+# --- TAB : RECHERCHE ---
+with tab_search:
+    st.markdown("### 🔍 Affiner votre choix")
+    col_f1, col_f2, col_f3 = st.columns(3)
+    
+    with col_f1:
+        f_type = st.selectbox("Type de véhicule", ["Tous", "Voiture", "Moto"])
+    with col_f2:
+        max_px = st.slider("Budget Maximum (F CFA)", 5000000, 150000000, 150000000, step=1000000)
+    with col_f3:
+        search_query = st.text_input("Modèle spécifique...", "")
 
-# --- SECTION MOTOS ---
-st.divider()
-st.markdown("## 🏍️ Univers Deux-Roues")
-motos = [
-    {"mod": "Yamaha TMAX 560", "px": "8.500.000 F", "desc": "Série Tech MAX • 2024 • Neuf", "img": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800"},
-    {"mod": "BMW R 1250 GS", "px": "14.000.000 F", "desc": "Adventure Edition • Idéal Routes Sénégal", "img": "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=800"}
-]
+    # Filtrage
+    results = [i for i in inventory if (f_type == "Tous" or i['type'] == f_type) 
+               and i['px'] <= max_px 
+               and (search_query.lower() in i['mod'].lower())]
 
-m1, m2 = st.columns(2)
-for i, m in enumerate(motos):
-    with (m1 if i==0 else m2):
-        st.markdown(f"""<div class="product-card">
-            <img src="{m['img']}" class="product-img">
-            <span class="sn-badge">STOCK LOCAL</span>
-            <h3 style="margin:5px 0;">{m['mod']}</h3>
-            <p style="opacity:0.7;">{m['desc']}</p>
-            <h4 style="color: #bdc3c7;">{m['px']}</h4>
-        </div>""", unsafe_allow_html=True)
-        if st.button(f"Réserver {m['mod']}", key=f"moto_{i}"):
-            st.session_state.selection = m
+    st.write(f"**{len(results)}** résultats trouvés")
+    
+    # Affichage grille
+    grid_cols = st.columns(3)
+    for idx, item in enumerate(results):
+        with grid_cols[idx % 3]:
+            st.markdown(f"""<div class="product-card">
+                <img src="{item['img']}" class="product-img">
+                <h3 style="font-size: 1.1rem;">{item['mod']}</h3>
+                <p style="font-size: 0.8rem; height: 40px;">{item['desc']}</p>
+                <h4 style="color: #bdc3c7;">{item['px']:,} F</h4>
+            </div>""", unsafe_allow_html=True)
+            if st.button("Réserver via WhatsApp 🇸🇳", key=f"res_{idx}"):
+                msg = f"Bonjour Dakar Elite, je suis intéressé par {item['mod']} ({item['px']:,} F)."
+                st.markdown(f'<meta http-equiv="refresh" content="0;url=https://wa.me/221770000000?text={urllib.parse.quote(msg)}">', unsafe_allow_html=True)
 
-# --- CONTACT WHATSAPP ---
-if st.session_state.selection:
-    sel = st.session_state.selection
-    st.success(f"✅ Vous avez sélectionné : **{sel['mod']}**")
-    msg = f"Bonjour Dakar Elite, je suis intéressé par le modèle {sel['mod']} affiché à {sel['px']}. Est-il disponible pour une visite ?"
-    whatsapp_url = f"https://wa.me/221770000000?text={urllib.parse.quote(msg)}"
-    st.markdown(f"""
-        <a href="{whatsapp_url}" target="_blank" style="text-decoration: none;">
-            <div style="background-color: #25D366; color: white; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold;">
-                CONTACTER NOTRE SHOWROOM SUR WHATSAPP 🇸🇳
-            </div>
-        </a>
-    """, unsafe_allow_html=True)
+# --- TAB : MARQUES ---
+with tab_brands:
+    st.markdown("### 🏆 Nos Partenaires Officiels")
+    brands = {
+        "Allemandes": ["Mercedes-Benz", "BMW", "Audi", "Porsche"],
+        "Japonaises": ["Toyota", "Lexus", "Yamaha", "Honda"],
+        "Luxe": ["Range Rover", "Bentley", "Lamborghini"]
+    }
+    b_col1, b_col2, b_col3 = st.columns(3)
+    with b_col1:
+        st.write("**🇪🇺 ALLEMANDES**")
+        for b in brands["Allemandes"]: st.write(f"• {b}")
+    with b_col2:
+        st.write("**🇯🇵 JAPONAISES**")
+        for b in brands["Japonaises"]: st.write(f"• {b}")
+    with b_col3:
+        st.write("**💎 PRESTIGE**")
+        for b in brands["Luxe"]: st.write(f"• {b}")
 
 # --- FOOTER ---
-st.markdown("<br><hr><center>Dakar Elite © 2026 - Almadies, Dakar, Sénégal</center>", unsafe_allow_html=True)
+st.markdown(f"""
+    <br><hr>
+    <div style="text-align: center; opacity: 0.6; padding: 20px;">
+        <span class="fi fi-sn"></span> Dakar Elite - Showroom Almadies | Ouvert du Lundi au Samedi
+    </div>
+""", unsafe_allow_html=True)
