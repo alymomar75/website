@@ -9,131 +9,163 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS CORRECTEMENT ENCAPSULÉ ---
+# --- BLOC CSS (CORRIGÉ POUR NE PAS S'AFFICHER) ---
 st.markdown("""
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
     <style>
-    /* Masquer le header Streamlit */
+    /* Cache le menu Streamlit par défaut */
     [data-testid="stHeader"] { visibility: hidden; }
-    
-    /* Fond Gris Anthracite */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Fond du site */
     .stApp {
-        background: #1a1a1a;
+        background-color: #1a1a1a;
         color: #ffffff;
     }
-    
-    /* Cartes Produits */
+
+    /* Style des Cartes */
     .product-card {
         background: #262626;
-        padding: 15px;
-        border-radius: 12px;
+        padding: 20px;
+        border-radius: 15px;
         border: 1px solid #333;
-        margin-bottom: 20px;
-        transition: 0.3s;
+        margin-bottom: 10px;
+        transition: 0.3s ease;
     }
     
     .product-card:hover {
         border-color: #bdc3c7;
         transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     }
 
+    /* Images des produits */
     .product-img {
         width: 100%;
         height: 250px;
-        object-fit: contain; /* Pour voir toute la voiture sans coupure */
-        border-radius: 8px;
+        object-fit: cover;
+        border-radius: 10px;
         background: #000;
     }
 
+    /* Badge Sénégal */
     .sn-badge {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
         background: rgba(0, 255, 100, 0.1);
         color: #00ff88;
-        padding: 5px 10px;
+        padding: 6px 12px;
         border-radius: 5px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
+        margin: 15px 0;
+        font-weight: bold;
+    }
+
+    /* Prix */
+    .price-text {
+        color: #ffffff;
+        font-weight: 900;
+        font-size: 1.6rem;
         margin: 10px 0;
     }
 
-    .price-text {
-        color: #ffffff;
+    /* Bouton WhatsApp Vert */
+    .wa-button {
+        display: block;
+        text-align: center;
+        background-color: #25D366;
+        color: white !important;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
         font-weight: bold;
-        font-size: 1.4rem;
+        margin-top: 10px;
     }
     
-    /* Navigation */
-    .stTabs [data-baseweb="tab-list"] { justify-content: center; gap: 50px; }
-    button[kind="secondary"] { background: #25D366 !important; color: white !important; border: none !important; }
+    .stTabs [data-baseweb="tab-list"] {
+        justify-content: center;
+        gap: 30px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# --- BASE DE DONNÉES PRODUITS (PHOTOS RÉELLES) ---
+# --- BASE DE DONNÉES PRODUITS ---
 inventory = [
     {
-        "cat": "Voiture",
         "mod": "Range Rover Vogue SV 2022",
         "px": "95.000.000 F",
-        "desc": "Édition SV • Gris Flux • Intérieur Cuir étendu",
+        "desc": "V8 Special Vehicle Operations • Gris Satin • Intérieur Executive",
         "img": "https://images.unsplash.com/photo-1645731504302-601934960960?q=80&w=1000"
     },
     {
-        "cat": "Voiture",
         "mod": "Hyundai Tucson 2023",
         "px": "24.500.000 F",
-        "desc": "Finition Prestige • Full LED • Caméra 360°",
+        "desc": "Modèle 2023 • Calandre Paramétrique • Neuf 0km",
         "img": "https://images.unsplash.com/photo-1669811400262-9e9095697669?q=80&w=1000"
     },
     {
-        "cat": "Moto",
-        "mod": "KTM 110 (SX/Duke Style)",
-        "px": "1.850.000 F",
-        "desc": "Moteur monocylindre • Très agile • Parfait pour débuter",
+        "mod": "KTM Duke 125/200",
+        "px": "2.200.000 F",
+        "desc": "Style KTM 110 Ready-to-race • Performance & Agilité",
         "img": "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?q=80&w=1000"
     },
     {
-        "cat": "Moto",
         "mod": "Yamaha NMAX 155",
-        "px": "2.100.000 F",
-        "desc": "ABS • Start & Stop • Stock limité Dakar",
+        "px": "2.150.000 F",
+        "desc": "Scooter Urbain • ABS • Éclairage LED • Neuf",
         "img": "https://images.unsplash.com/photo-1611082590912-3255dfb82813?q=80&w=1000"
     }
 ]
 
-# --- ENTÊTE ---
+# --- EN-TÊTE ---
 st.markdown("""
-    <div style="text-align: center; padding-bottom: 20px;">
-        <h1 style="margin:0; letter-spacing: 3px;">DAKAR <span style="color: #bdc3c7;">ELITE</span></h1>
-        <p><span class="fi fi-sn"></span> Showroom Premium - Almadies</p>
+    <div style="text-align: center; padding: 20px 0;">
+        <h1 style="font-size: 3rem; margin:0; letter-spacing: 2px;">DAKAR <span style="color: #bdc3c7;">ELITE</span></h1>
+        <p style="font-size: 1.2rem;"><span class="fi fi-sn"></span> Showroom Almadies - Excellence Automobile</p>
     </div>
 """, unsafe_allow_html=True)
 
-# --- CATALOGUE ---
-tab1, tab2 = st.tabs(["ACCUEIL", "RECHERCHE"])
+# --- NAVIGATION ---
+tab1, tab2, tab3 = st.tabs(["🏠 ACCUEIL", "🔍 RECHERCHE", "📞 CONTACT"])
 
 with tab1:
     col1, col2 = st.columns(2)
+    
     for i, item in enumerate(inventory):
-        target_col = col1 if i % 2 == 0 else col2
-        with target_col:
+        with (col1 if i % 2 == 0 else col2):
+            msg = f"Bonjour Dakar Elite 🇸🇳, je suis intéressé par le modèle {item['mod']}."
+            wa_url = f"https://wa.me/221770000000?text={urllib.parse.quote(msg)}"
+            
             st.markdown(f"""
                 <div class="product-card">
                     <img src="{item['img']}" class="product-img">
-                    <div class="sn-badge"><span class="fi fi-sn"></span> DISPONIBLE AU SHOWROOM</div>
-                    <h2 style="margin:0; font-size:1.5rem;">{item['mod']}</h2>
-                    <p style="opacity:0.8;">{item['desc']}</p>
+                    <div class="sn-badge"><span class="fi fi-sn"></span> DISPONIBLE À DAKAR</div>
+                    <h2 style="margin:0; font-size:1.6rem; color: #bdc3c7;">{item['mod']}</h2>
+                    <p style="opacity:0.8; font-size: 0.95rem; margin: 10px 0;">{item['desc']}</p>
                     <p class="price-text">{item['px']}</p>
+                    <a href="{wa_url}" target="_blank" class="wa-button">RÉSERVER SUR WHATSAPP</a>
                 </div>
             """, unsafe_allow_html=True)
-            
-            # Bouton de contact
-            msg = f"Bonjour, je souhaite réserver la {item['mod']}."
-            wa_url = f"https://wa.me/221770000000?text={urllib.parse.quote(msg)}"
-            st.link_button("RESERVER SUR WHATSAPP 🇸🇳", wa_url, use_container_width=True)
+            st.write("") # Espaceur
 
 with tab2:
-    st.write("Le catalogue complet des marques (Toyota, Mercedes, Yamaha...) arrive bientôt.")
+    st.write("### Filtres de recherche")
+    st.multiselect("Marques disponibles", ["Toyota", "Mercedes", "Hyundai", "Range Rover", "Yamaha", "KTM"])
+    st.slider("Budget Maximum (F CFA)", 1000000, 100000000, 50000000)
 
-# --- FOOTER ---
-st.markdown("<br><hr><center>Dakar Elite Auto & Moto © 2026</center>", unsafe_allow_html=True)
+with tab3:
+    st.markdown("""
+        <div style="background: #262626; padding: 40px; border-radius: 15px; text-align: center;">
+            <h2>📍 Retrouvez-nous</h2>
+            <p>Route des Almadies, en face de la banque SG.</p>
+            <p>Dakar, Sénégal</p>
+            <hr style="border-color: #444;">
+            <h3>🕘 Horaires</h3>
+            <p>Lundi - Samedi : 09h00 - 19h00</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# --- PIED DE PAGE ---
+st.markdown("<br><center>Dakar Elite © 2026 - Le prestige au Sénégal 🇸🇳</center>", unsafe_allow_html=True)
