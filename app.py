@@ -1,7 +1,5 @@
 import streamlit as st
 import urllib.parse
-import base64
-import os
 
 # 1. CONFIGURATION DE LA PAGE
 st.set_page_config(
@@ -130,8 +128,29 @@ for i, c in enumerate(cars):
 if st.session_state.voiture_selectionnee:
     st.info(f"🚘 Véhicule choisi : **{st.session_state.voiture_selectionnee}**")
 
+    # Bouton WhatsApp pour confirmer la réservation
+    message = f"Bonjour, je souhaite réserver le véhicule {st.session_state.voiture_selectionnee} au prix de {st.session_state.prix_voiture}."
+    whatsapp_url = f"https://wa.me/221771234567?text={urllib.parse.quote(message)}"
+    st.markdown(f"[📲 Confirmer via WhatsApp]({whatsapp_url})", unsafe_allow_html=True)
+
 # --- SERVICES & LIVRAISON ---
 st.divider()
 st.subheader("🛠️ Services & Livraison")
 
-col_left, col_right = st.
+col_left, col_right = st.columns(2)
+
+with col_left:
+    st.markdown("""
+        <div class="vip-card">
+            <h3>🚚 Livraison Premium</h3>
+            <p>Transport sécurisé et rapide partout au Sénégal.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col_right:
+    st.markdown("""
+        <div class="vip-card">
+            <h3>🛠️ Service VIP</h3>
+            <p>Entretien, assistance et suivi personnalisé pour votre véhicule.</p>
+        </div>
+    """, unsafe_allow_html=True)
